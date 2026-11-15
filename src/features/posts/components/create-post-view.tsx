@@ -32,6 +32,7 @@ export function CreatePostView() {
         submitLabel="Publish Post"
         cancelHref="/posts"
         isSubmitting={isLoading}
+        resetOnSuccess
         onSubmitValues={handleCreate}
       />
     </div>

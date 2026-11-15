@@ -32,6 +32,7 @@ export function CreateNoteView() {
         submitLabel="Save Note"
         cancelHref="/notes"
         isSubmitting={isLoading}
+        resetOnSuccess
         onSubmitValues={handleCreate}
       />
     </div>

@@ -19,6 +19,7 @@ interface PostFormProps {
   submitLabel: string;
   cancelHref: string;
   isSubmitting: boolean;
+  resetOnSuccess?: boolean;
   onSubmitValues: (values: PostFormValues) => Promise<void>;
 }
 
@@ -27,6 +28,7 @@ export function PostForm({
   submitLabel,
   cancelHref,
   isSubmitting,
+  resetOnSuccess = false,
   onSubmitValues,
 }: PostFormProps) {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -35,6 +37,7 @@ export function PostForm({
     register,
     handleSubmit,
     setError,
+    reset,
     control,
     formState: { errors },
   } = useForm<PostFormValues>({
@@ -49,6 +52,9 @@ export function PostForm({
     setServerError(null);
     try {
       await onSubmitValues(values);
+      if (resetOnSuccess) {
+        reset({ title: "", content: "" });
+      }
     } catch (error) {
       const message = applyServerValidationErrors(error, setError, [
         "title",

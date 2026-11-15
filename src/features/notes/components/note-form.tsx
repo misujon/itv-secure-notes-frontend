@@ -19,6 +19,7 @@ interface NoteFormProps {
   submitLabel: string;
   cancelHref: string;
   isSubmitting: boolean;
+  resetOnSuccess?: boolean;
   onSubmitValues: (values: NoteFormValues) => Promise<void>;
 }
 
@@ -27,6 +28,7 @@ export function NoteForm({
   submitLabel,
   cancelHref,
   isSubmitting,
+  resetOnSuccess = false,
   onSubmitValues,
 }: NoteFormProps) {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -35,6 +37,7 @@ export function NoteForm({
     register,
     handleSubmit,
     setError,
+    reset,
     control,
     formState: { errors },
   } = useForm<NoteFormValues>({
@@ -49,6 +52,9 @@ export function NoteForm({
     setServerError(null);
     try {
       await onSubmitValues(values);
+      if (resetOnSuccess) {
+        reset({ title: "", content: "" });
+      }
     } catch (error) {
       const message = applyServerValidationErrors(error, setError, [
         "title",
