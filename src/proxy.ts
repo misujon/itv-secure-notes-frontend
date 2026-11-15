@@ -7,9 +7,10 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasToken = Boolean(request.cookies.get(AUTH_COOKIE_NAME)?.value);
 
-  const isProtected = PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
+  const isProtected =
+    PROTECTED_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+    ) || /^\/posts\/[^/]+\/edit$/.test(pathname);
 
   if (isProtected && !hasToken) {
     const loginUrl = new URL("/login", request.url);
@@ -26,5 +27,6 @@ export const config = {
     "/notes/:path*",
     "/profile/:path*",
     "/posts/new",
+    "/posts/:id/edit",
   ],
 };

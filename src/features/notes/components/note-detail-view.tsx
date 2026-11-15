@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, CalendarDays, Pencil, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { ErrorState } from "@/components/shared/error-state";
+import { RichTextContent } from "@/components/shared/rich-text-content";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -100,9 +101,7 @@ export function NoteDetailView({ id }: { id: string }) {
 
       <Card className="border-border shadow-xs">
         <CardContent className="pt-6">
-          <div className="text-sm sm:text-base leading-relaxed text-foreground whitespace-pre-wrap break-words">
-            {note.content}
-          </div>
+          <RichTextContent content={note.content} />
         </CardContent>
       </Card>
 

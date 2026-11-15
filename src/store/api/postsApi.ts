@@ -46,6 +46,18 @@ export const postsApi = baseApi.injectEndpoints({
       transformResponse: (response: ApiSuccessResponse<Post>) => response.data,
       invalidatesTags: [{ type: "Posts", id: "LIST" }],
     }),
+    updatePost: builder.mutation<Post, { id: string } & Partial<PostFormValues>>({
+      query: ({ id, ...body }) => ({
+        url: `/proxy/posts/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      transformResponse: (response: ApiSuccessResponse<Post>) => response.data,
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Post", id },
+        { type: "Posts", id: "LIST" },
+      ],
+    }),
     getUserPosts: builder.query<UserPostsResponse, UserPostsQueryParams>({
       query: ({ userId, page = 1, per_page = 12 }) =>
         `/proxy/users/${userId}/posts?page=${page}&per_page=${per_page}`,
@@ -60,5 +72,6 @@ export const {
   useGetPostsQuery,
   useGetPostQuery,
   useCreatePostMutation,
+  useUpdatePostMutation,
   useGetUserPostsQuery,
 } = postsApi;

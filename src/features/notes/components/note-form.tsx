@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, LoaderCircle, Save } from "lucide-react";
+import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { applyServerValidationErrors } from "@/lib/utils/api-error";
+import { stripHtml } from "@/lib/utils/html";
 import { noteSchema, type NoteFormValues } from "@/lib/validations/note";
 
 interface NoteFormProps {
@@ -103,21 +104,25 @@ export function NoteForm({
             <div className="flex items-center justify-between gap-2">
               <Label htmlFor="note-content">Content</Label>
               <span className="text-xs text-muted-foreground">
-                {contentValue.length.toLocaleString()}/50,000
+                {stripHtml(contentValue).length.toLocaleString()} chars
               </span>
             </div>
-            <Textarea
-              id="note-content"
-              rows={12}
-              placeholder="Write your note here..."
-              maxLength={50000}
-              className="min-h-[240px] resize-y leading-relaxed"
-              aria-invalid={Boolean(errors.content)}
-              aria-describedby={
-                errors.content ? "note-content-error" : undefined
-              }
-              disabled={isSubmitting}
-              {...register("content")}
+            <Controller
+              control={control}
+              name="content"
+              render={({ field }) => (
+                <RichTextEditor
+                  id="note-content"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Write your note here..."
+                  disabled={isSubmitting}
+                  invalid={Boolean(errors.content)}
+                  describedBy={
+                    errors.content ? "note-content-error" : undefined
+                  }
+                />
+              )}
             />
             {errors.content ? (
               <p id="note-content-error" className="text-xs text-destructive">

@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteNoteDialog } from "@/features/notes/components/delete-note-dialog";
 import { extractApiError } from "@/lib/utils/api-error";
 import { formatDisplayDate } from "@/lib/utils/date";
+import { stripHtml } from "@/lib/utils/html";
 import { useGetNotesQuery } from "@/store/api/notesApi";
 import type { Note } from "@/types/api";
 
@@ -101,8 +102,8 @@ export function NotesListView() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-line break-words">
-                      {note.content}
+                    <p className="text-sm text-muted-foreground line-clamp-3 break-words">
+                      {stripHtml(note.content)}
                     </p>
                   </CardContent>
                 </div>

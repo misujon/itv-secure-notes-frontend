@@ -19,6 +19,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { extractApiError } from "@/lib/utils/api-error";
 import { formatDisplayDate } from "@/lib/utils/date";
+import { stripHtml } from "@/lib/utils/html";
 import { useGetMeQuery } from "@/store/api/authApi";
 import { useGetPostsQuery } from "@/store/api/postsApi";
 
@@ -113,8 +114,8 @@ export function PostsListView() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-line break-words">
-                      {post.content}
+                    <p className="text-sm text-muted-foreground line-clamp-3 break-words">
+                      {stripHtml(post.content)}
                     </p>
                   </CardContent>
                 </div>

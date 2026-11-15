@@ -53,6 +53,15 @@ function resolveAllowedRoute(
   }
 
   if (
+    segments.length === 2 &&
+    segments[0] === "posts" &&
+    OBJECT_ID_REGEX.test(segments[1]) &&
+    method === "PATCH"
+  ) {
+    return { requiresAuth: true };
+  }
+
+  if (
     segments.length === 3 &&
     segments[0] === "users" &&
     OBJECT_ID_REGEX.test(segments[1]) &&
