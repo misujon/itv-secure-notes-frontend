@@ -35,6 +35,10 @@ function resolveAllowedRoute(
     return { requiresAuth: true };
   }
 
+  if (path === "interests" && method === "GET") {
+    return { requiresAuth: false };
+  }
+
   if (path === "posts" && method === "GET") {
     return { requiresAuth: false };
   }

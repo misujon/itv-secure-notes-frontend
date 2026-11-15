@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { InterestSelector } from "@/components/shared/interest-selector";
 import { useRegisterMutation } from "@/store/api/authApi";
 import {
   registerSchema,
@@ -33,6 +34,7 @@ export function RegisterForm() {
 
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors },
@@ -43,6 +45,7 @@ export function RegisterForm() {
       email: "",
       password: "",
       password_confirmation: "",
+      interests: [],
     },
   });
 
@@ -192,6 +195,21 @@ export function RegisterForm() {
                 {errors.password_confirmation.message}
               </p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Interests (optional)</Label>
+            <Controller
+              name="interests"
+              control={control}
+              render={({ field }) => (
+                <InterestSelector
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  disabled={isLoading}
+                />
+              )}
+            />
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>

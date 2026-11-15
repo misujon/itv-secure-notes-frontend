@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
         email: body.email,
         password: body.password,
         password_confirmation: body.password_confirmation,
+        ...(Array.isArray(body.interests) ? { interests: body.interests } : {}),
       },
     },
   );

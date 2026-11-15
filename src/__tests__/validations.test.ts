@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { loginSchema, registerSchema } from "@/lib/validations/auth";
+import {
+  loginSchema,
+  registerSchema,
+  updatePasswordSchema,
+  updateProfileSchema,
+} from "@/lib/validations/auth";
 import { noteSchema } from "@/lib/validations/note";
 import { postSchema } from "@/lib/validations/post";
 
@@ -57,5 +62,39 @@ describe("Validation schemas", () => {
     expect(postSchema.safeParse({ title: "", content: "" }).success).toBe(
       false,
     );
+  });
+
+  it("validates profile update and password update schemas", () => {
+    expect(
+      updateProfileSchema.safeParse({
+        name: "Jane Doe",
+        email: "jane@example.com",
+        interests: ["chess", "reading"],
+      }).success,
+    ).toBe(true);
+
+    expect(
+      updateProfileSchema.safeParse({
+        name: "",
+        email: "invalid",
+        interests: [],
+      }).success,
+    ).toBe(false);
+
+    expect(
+      updatePasswordSchema.safeParse({
+        current_password: "oldpassword",
+        password: "newpassword123",
+        password_confirmation: "newpassword123",
+      }).success,
+    ).toBe(true);
+
+    expect(
+      updatePasswordSchema.safeParse({
+        current_password: "oldpassword",
+        password: "newpassword123",
+        password_confirmation: "mismatch",
+      }).success,
+    ).toBe(false);
   });
 });
