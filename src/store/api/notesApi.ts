@@ -13,6 +13,7 @@ export interface NotesQueryParams {
 
 export const notesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    /** Paginate the authenticated user's private notes. */
     getNotes: builder.query<ApiPaginatedResponse<Note>, NotesQueryParams | void>({
       query: (params) => {
         const page = params?.page ?? 1;
@@ -27,11 +28,13 @@ export const notesApi = baseApi.injectEndpoints({
             ]
           : [{ type: "Notes", id: "LIST" }],
     }),
+    /** Fetch a single private note by ID. */
     getNote: builder.query<Note, string>({
       query: (id) => `/proxy/notes/${id}`,
       transformResponse: (response: ApiSuccessResponse<Note>) => response.data,
       providesTags: (_result, _error, id) => [{ type: "Note", id }],
     }),
+    /** Create a new private note and invalidate the notes list cache. */
     createNote: builder.mutation<Note, NoteFormValues>({
       query: (body) => ({
         url: "/proxy/notes",
@@ -41,6 +44,7 @@ export const notesApi = baseApi.injectEndpoints({
       transformResponse: (response: ApiSuccessResponse<Note>) => response.data,
       invalidatesTags: [{ type: "Notes", id: "LIST" }],
     }),
+    /** Update an existing private note by ID. */
     updateNote: builder.mutation<Note, { id: string } & Partial<NoteFormValues>>({
       query: ({ id, ...body }) => ({
         url: `/proxy/notes/${id}`,
@@ -53,6 +57,7 @@ export const notesApi = baseApi.injectEndpoints({
         { type: "Notes", id: "LIST" },
       ],
     }),
+    /** Soft-delete a private note by ID. */
     deleteNote: builder.mutation<void, string>({
       query: (id) => ({
         url: `/proxy/notes/${id}`,

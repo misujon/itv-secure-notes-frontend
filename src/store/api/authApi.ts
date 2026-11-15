@@ -14,16 +14,19 @@ export interface InterestItem {
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    /** Fetch the currently authenticated user profile from `/api/auth/me`. */
     getMe: builder.query<User, void>({
       query: () => "/auth/me",
       transformResponse: (response: ApiSuccessResponse<User>) => response.data,
       providesTags: ["Auth"],
     }),
+    /** Fetch active admin-managed interests for signup and profile selection. */
     getInterests: builder.query<InterestItem[], void>({
       query: () => "/proxy/interests",
       transformResponse: (response: ApiSuccessResponse<InterestItem[]>) =>
         response.data,
     }),
+    /** Authenticate credentials via `/api/auth/login` (sets HttpOnly JWT cookie). */
     login: builder.mutation<User, LoginFormValues>({
       query: (credentials) => ({
         url: "/auth/login",
@@ -34,6 +37,7 @@ export const authApi = baseApi.injectEndpoints({
         response.data.user,
       invalidatesTags: ["Auth", { type: "Notes", id: "LIST" }],
     }),
+    /** Register a new user account with optional interests and start a session. */
     register: builder.mutation<User, RegisterFormValues>({
       query: (payload) => ({
         url: "/auth/register",
@@ -44,6 +48,7 @@ export const authApi = baseApi.injectEndpoints({
         response.data.user,
       invalidatesTags: ["Auth", { type: "Notes", id: "LIST" }],
     }),
+    /** Invalidate the server JWT session and clear RTK Query cached state. */
     logout: builder.mutation<void, void>({
       query: () => ({
         url: "/auth/logout",
@@ -57,6 +62,7 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    /** Update the authenticated user's name, email, and interests. */
     updateProfile: builder.mutation<User, UpdateProfileFormValues>({
       query: (body) => ({
         url: "/auth/me",
@@ -66,6 +72,7 @@ export const authApi = baseApi.injectEndpoints({
       transformResponse: (response: ApiSuccessResponse<User>) => response.data,
       invalidatesTags: ["Auth"],
     }),
+    /** Change the authenticated user's password after verifying current_password. */
     updatePassword: builder.mutation<void, UpdatePasswordFormValues>({
       query: (body) => ({
         url: "/auth/password",

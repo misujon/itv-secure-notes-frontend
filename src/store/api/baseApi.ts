@@ -11,6 +11,10 @@ const rawBaseQuery = fetchBaseQuery({
   credentials: "same-origin",
 });
 
+/**
+ * Shared RTK Query base query that routes requests through Next.js BFF endpoints
+ * and redirects to `/login?expired=1` when an authenticated session returns 401.
+ */
 const baseQueryWithSessionHandling: BaseQueryFn<
   string | FetchArgs,
   unknown,

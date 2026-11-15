@@ -18,6 +18,7 @@ export interface UserPostsQueryParams extends PostsQueryParams {
 
 export const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    /** Paginate all public community posts. */
     getPosts: builder.query<ApiPaginatedResponse<Post>, PostsQueryParams | void>({
       query: (params) => {
         const page = params?.page ?? 1;
@@ -32,11 +33,13 @@ export const postsApi = baseApi.injectEndpoints({
             ]
           : [{ type: "Posts", id: "LIST" }],
     }),
+    /** Fetch a single public post by ID. */
     getPost: builder.query<Post, string>({
       query: (id) => `/proxy/posts/${id}`,
       transformResponse: (response: ApiSuccessResponse<Post>) => response.data,
       providesTags: (_result, _error, id) => [{ type: "Post", id }],
     }),
+    /** Publish a new public post and invalidate the posts list cache. */
     createPost: builder.mutation<Post, PostFormValues>({
       query: (body) => ({
         url: "/proxy/posts",
@@ -46,6 +49,7 @@ export const postsApi = baseApi.injectEndpoints({
       transformResponse: (response: ApiSuccessResponse<Post>) => response.data,
       invalidatesTags: [{ type: "Posts", id: "LIST" }],
     }),
+    /** Update an existing public post owned by the user (or any post for admins). */
     updatePost: builder.mutation<Post, { id: string } & Partial<PostFormValues>>({
       query: ({ id, ...body }) => ({
         url: `/proxy/posts/${id}`,
@@ -58,6 +62,7 @@ export const postsApi = baseApi.injectEndpoints({
         { type: "Posts", id: "LIST" },
       ],
     }),
+    /** Fetch paginated public posts authored by a specific user via MongoDB $lookup. */
     getUserPosts: builder.query<UserPostsResponse, UserPostsQueryParams>({
       query: ({ userId, page = 1, per_page = 12 }) =>
         `/proxy/users/${userId}/posts?page=${page}&per_page=${per_page}`,
